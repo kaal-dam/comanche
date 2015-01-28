@@ -30,8 +30,8 @@ int main(){
                 return -1;
             }
             /*tant que le client est connecte, on repete ce qu'il nous envoie*/
-            while((nb_lus=read(fd, &s2, 512))!=-1){
-                if(nb_lus<1){
+            while((nb_lus=read(fd, &s2, 512))>0){
+                if(nb_lus<0){
                     perror("lecture");
                     return -1;
                 }
@@ -40,8 +40,8 @@ int main(){
                     return -1;
                 }
             }
-            close(fd);
         }
+        close(fd);
     }
     return 0;
 }
