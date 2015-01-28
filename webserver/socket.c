@@ -11,6 +11,12 @@ int creer_serveur(int port){
         perror("socket_server");
         return -1;
     }
+    int opt;
+    opt=1;
+    if(setsockopt(socket_server, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int))==-1){
+        perror("can not set SO_REUSEADDR option");
+        return -1;
+    }
     struct sockaddr_in saddr;
     saddr.sin_family=AF_INET;
     saddr.sin_port=htons(port);
