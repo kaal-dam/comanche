@@ -1,16 +1,32 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/socket.h>
 #include <errno.h>
 #include <unistd.h>
 #include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include "socket.h"
 
+void traitement_signal(){
+    int status;
+    if(waitpid(-1, &status, WNOHANG)==-1){
+        perror("waitpid");
+    }
+}
 /*Fonction qui sert au serveur a ignorer les signaux SIGPIPE*/
 void initialiser_signaux(){
     if(signal(SIGPIPE, SIG_IGN)==SIG_ERR){
         perror("signal");
+    }
+    struct sigaction sa;
+    sa.sa_handler=traitement_signal;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags=(SA_RESTART);
+    if(sigaction(SIGCHLD, &sa, NULL)==-1){
+        perror("sigaction(SIGCHLD)");
     }
 }
 
@@ -50,15 +66,16 @@ int main(){
                 //}
                 /*tant que le client est connecte, on repete ce qu'il nous envoie*/
                 while((nb_lus=read(fd, &s2, 512))>0){
-                    if(nb_lus<0){
-                        perror("lecture");
-                        return -1;
-                    }
                     if(write(fd, &s2, nb_lus)==-1){
                         perror("ecriture");
                         return -1;
                     }
                 }
+                if(nb_lus<0){
+                    perror("lecture");
+                    return -1;
+                }
+                exit(0);
             /*Dans le pere*/
             }else{
                 close(fd);
