@@ -85,7 +85,7 @@ int main(){
                         printf("erreur fgets\n");
                         fflush(NULL);
                     }
-                    if(fprintf(s2, s3)<0){
+                    if(fprintf(stdout, s3)<0){
                         printf("erreur fprintf\n");
                         fflush(NULL);
                     }
