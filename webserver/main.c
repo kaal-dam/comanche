@@ -60,7 +60,8 @@ int main(){
                 const char * mode;
                 /*en mode lecture et ecriture*/
                 mode="w+";
-                char *s;
+                char * s;
+                char s3[1024];
                 FILE * s2=NULL;
                 /*obtenir une structure FILE * a partir du descripteur correspondant a la socket client*/
                 s2=fdopen(fd, mode);
@@ -75,14 +76,18 @@ int main(){
                 if(fprintf(s2, s)<0){
                     exit(-1);
                 }
-                s="";
+                s="a";
                 //}
                 /*tant que le client est connecte, on repete ce qu'il nous envoie*/
-                /*Marche pas encore avec fgets*/
-                while((s=fgets(s, 512, s2))!=NULL){
-                    fprintf(s2, "coucou 1!");
-                    if(fprintf(s2, s)<0){
-                        exit(-1);
+                /*Marche pas encore avec fgets, remplacer la condition while (toujours vrai)*/
+                while(feof(s2)!=1){
+                    if(fgets(s3, 1024, s2)==NULL){
+                        printf("erreur fgets\n");
+                        fflush(NULL);
+                    }
+                    if(fprintf(s2, s3)<0){
+                        printf("erreur fprintf\n");
+                        fflush(NULL);
                     }
                 }
                 /*fils termine*/
