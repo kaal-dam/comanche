@@ -87,23 +87,29 @@ int main(){
                         if((ss=sscanf(s3, "%s %s %s %s", s4, s5, s6, s7))!=3 || strcmp(s4, "GET")!=0 || (strcmp(s6, "HTTP/1.1")!=0 && strcmp(s6, "HTTP/1.0")!=0)){
                             fprintf(s2, "HTTP/1.1 400 Bad Request\r\nConnection: close\r\nContent-Length: %u\r\n\r\n400 Bad Request\r\n", (unsigned) sizeof(s3));
                             fflush(NULL);
-                            exit(0);
+                            exit(-1);
                         }else{
                             tailleLue+=(unsigned) sizeof(s3);
                         }
                     }else{
                         if(strcmp(s3, "\r\n")==0 || strcmp(s3, "\n")==0){
-			                if(fprintf(stdout, "%s 200 OK %u\n", s6, (unsigned) sizeof(s3))<0){
-			                    exit(-1);
-			                }
-			                /*Message de bienvenue*/
-			                s="Bienvenue sur mon serveur aventurier! Serais tu un ennemi des comanches? si tel est le cas, je te conseille de te deconnecter très vite de ce serveur.. sinon, bienvenue a toi dans notre tribu, tu seras notre invite jusqu'a ce que tu decides de couper la connection qui nous lie. Nous t'offrirons tout ce dont tu as besoin, il te suffira de demander. Prends garde, les comanches sont de vieux indiens rusés et ils adorent faire des farces! ne t'etonne pas si certains de tes fichiers disparaissent ou bien si certains fichiers se creent tout seul sur ton ordinateur, ce ne sera jamais rien de mechant tu peux me faire confiance. Si tu as un probleme quelconque, viens donc voir kaal-dam, le chef de notre tribu, il pourra te depanner avec ses super pouvoirs! sinon, contactes maverick, ce vieux bougre n'est jamais loin et en general il est toujours volontaire pour aider! Evites aussi de parler aux comanches qui sont trop vieux comme serveuris qui t'heberge actuellement, il a tendance a repeter betement tout ce qu'on lui dit, et le pire c'est que ça l'amuse..\n";
-			                /*Boucle while pour tester l'erreur SIGPIPE*/
-			                //while(1){
-			                /*Message de bienvenue*/
-			                if(fprintf(s2, s)<0){
-			                    exit(-1);
-			                }
+                            if(strcmp(s5, "/")==0){
+			                    if(fprintf(stdout, "%s 200 OK %u\n", s6, (unsigned) sizeof(s3))<0){
+			                        exit(-1);
+			                    }
+			                    /*Message de bienvenue*/
+			                    s="Bienvenue sur mon serveur aventurier! Serais tu un ennemi des comanches? si tel est le cas, je te conseille de te deconnecter très vite de ce serveur.. sinon, bienvenue a toi dans notre tribu, tu seras notre invite jusqu'a ce que tu decides de couper la connection qui nous lie. Nous t'offrirons tout ce dont tu as besoin, il te suffira de demander. Prends garde, les comanches sont de vieux indiens rusés et ils adorent faire des farces! ne t'etonne pas si certains de tes fichiers disparaissent ou bien si certains fichiers se creent tout seul sur ton ordinateur, ce ne sera jamais rien de mechant tu peux me faire confiance. Si tu as un probleme quelconque, viens donc voir kaal-dam, le chef de notre tribu, il pourra te depanner avec ses super pouvoirs! sinon, contactes maverick, ce vieux bougre n'est jamais loin et en general il est toujours volontaire pour aider! Evites aussi de parler aux comanches qui sont trop vieux comme serveuris qui t'heberge actuellement, il a tendance a repeter betement tout ce qu'on lui dit, et le pire c'est que ça l'amuse..\n";
+			                    /*Boucle while pour tester l'erreur SIGPIPE*/
+			                    //while(1){
+			                    /*Message de bienvenue*/
+			                    if(fprintf(s2, s)<0){
+			                        exit(-1);
+			                    }
+                            }else{
+                                if(fprintf(s2, "404 page %s not found\n", s5)<0){
+                                    exit(-1);
+                                }
+                            }
                             exit(0);
                         }else{
                             tailleLue+=(unsigned) sizeof(s3);
