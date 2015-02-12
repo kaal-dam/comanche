@@ -12,5 +12,5 @@ typedef struct{
 }http_request;
 
 char *fgets_or_exit(char *buff, int size, FILE * stream);
-void skip_headers(FILE * client);
+void skip_headers(FILE * stream);
 int parse_http_request(const char * request_line, http_request *request);

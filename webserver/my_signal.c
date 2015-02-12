@@ -1,4 +1,5 @@
-#include "signals.h"
+#include "signal.h"
+#include "my_signal.h"
 #include <sys/wait.h>
 #include <stdio.h>
 

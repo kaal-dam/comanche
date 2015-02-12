@@ -1,4 +1,5 @@
-#include "messages.h"
+#include "message.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 /*Renvoie le code et statut correspondant a la requete faite par le client*/

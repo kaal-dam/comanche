@@ -1,4 +1,4 @@
-#include "requests.h"
+#include "request.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -13,18 +13,18 @@ char *fgets_or_exit(char * buff, int size, FILE *stream){
 /*traite la premiere ligne d'une requete http envoyee par le client, stocke les infos de cette requete dans une structure de type http_request*/
 int parse_http_request(const char * request_line, http_request *request){
     int ss=0;
-    char s1[32], s2[1024], s3[20], s4[2048];
-    if((ss=sscanf(request_line, "%s %s %s %s", s1, s2, s3, s4))==3 && (strcmp(s3, "HTTP/1.0")==0 || strcmp(s3, "HTTP/1.1")==0)){
-        if(strcmp(s1, "GET")==0){
+    char method[32], url[1024], version[20], s4[2048];
+    if((ss=sscanf(request_line, "%s %s %s %s", method, url, version, s4))==3 && (strcmp(version, "HTTP/1.0")==0 || strcmp(version, "HTTP/1.1")==0)){
+        if(strcmp(method, "GET")==0){
             request->method=HTTP_GET;
         }else{
             request->method=HTTP_UNSUPPORTED;
         }
-        request->url=s2;
-        if(strcmp(s3, "HHTTP/1.0")==0){
+        request->url=url;
+        if(strcmp(version, "HHTTP/1.0")==0){
             request->minor_version=1;
             request->major_version=0;
-        }else if(strcmp(s3, "HTTP/1.1")==0){
+        }else if(strcmp(version, "HTTP/1.1")==0){
             request->major_version=1;
             request->minor_version=0;
         }
@@ -35,9 +35,9 @@ int parse_http_request(const char * request_line, http_request *request){
 }
 
 /*traite les autres lignes de la requete http (pour l'instant on les ignores)*/
-void skip_headers(FILE * client){
+void skip_headers(FILE * stream_client){
     char poubelle[1024];
     while(strcmp(poubelle, "\r\n")!=0 && strcmp(poubelle, "\n")!=0){
-        fgets_or_exit(poubelle, 1024, client);
+        fgets_or_exit(poubelle, 1024, stream_client);
     }
 }
