@@ -14,7 +14,7 @@ char *fgets_or_exit(char * buff, int size, FILE *stream){
 int parse_http_request(const char * request_line, http_request *request){
     int ss=0, majversion, minversion;
     char method[32], s4[2048];
-    if((ss=sscanf(request_line, "%s %s HTTP%d.%d %s", method, request->url, &majversion, &minversion, s4))==3){
+    if((ss=sscanf(request_line, "%s %s HTTP/%d.%d %s", method, request->url, &majversion, &minversion, s4))==3){
         if(strcmp(method, "GET")==0){
             request->method=HTTP_GET;
         }else{
