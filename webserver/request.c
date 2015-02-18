@@ -14,7 +14,7 @@ char *fgets_or_exit(char * buff, int size, FILE *stream){
 int parse_http_request(const char * request_line, http_request *request){
     int ss=0, majversion, minversion;
     char method[32], s4[2048];
-    if((ss=sscanf(request_line, "%s %s HTTP/%d.%d %s", method, request->url, &majversion, &minversion, s4))==3){
+    if((ss=sscanf(request_line, "%s %s HTTP/%d.%d %s", method, request->url, &majversion, &minversion, s4))==4){
         if(strcmp(method, "GET")==0){
             request->method=HTTP_GET;
         }else{
@@ -26,7 +26,7 @@ int parse_http_request(const char * request_line, http_request *request){
         if(request->major_version!=1 || (request->minor_version!=0 && request->minor_version!=1)){
             return 0;
         }
-        request->url=rewrite_url(request->url);
+        rewrite_url(request->url);
         return 1;
     }else{
         return 0;
@@ -42,8 +42,10 @@ void skip_headers(FILE * stream_client){
 }
 
 /*reecris l'url que demande le client pour enlever les parametres si elle en contient*/
-char * rewrite_url(char *url){
-    char * pch;
-    pch = strtok (url,"?");
-    return pch;
+void rewrite_url(char *url){
+    char *s;
+    s=strchr(url, '?');
+    if(s!=NULL){
+       *s='\0';
+    }
 }

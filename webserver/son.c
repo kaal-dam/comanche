@@ -33,7 +33,7 @@ void traitement_fils(int fd_client){
         }else if(req.major_version!=1 || (req.minor_version!=0 && req.minor_version!=1)){
             send_response(data_stream, 505, "HTTP Version Not Supported", "HTTP Version Not Supported\r\n");
         }else{
-            send_response(data_stream, 400, "Bad Request", "Bad request\r\n");
+            send_response(data_stream, 400, "Bad Request", "Bad Request\r\n");
         }
     }else{
         if(strcmp(req.url, "/")==0){
