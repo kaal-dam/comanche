@@ -7,7 +7,7 @@
 #include "my_signal.h"
 #include "son.h"
 
-int main(int argc, char *argv[]){
+int main(){
     struct stat file_stat;
     /*repertoire racine du serveur*/
     const char *document_root="../html";

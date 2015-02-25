@@ -3,8 +3,11 @@
 #include "request.h"
 #include <string.h>
 #include <stdlib.h>
+#include "my_file.h"
 
 void traitement_fils(int fd_client, const char *root_dir){
+    /*fd du fichier*/
+    int fdFile;
     const char * mode;
     /*mode lecture et ecriture pour la structure FILE * a partir du descripteur de la socket cliente client*/
     mode="w+";
@@ -36,7 +39,7 @@ void traitement_fils(int fd_client, const char *root_dir){
             send_response(data_stream, 400, "Bad Request", "Bad Request\r\n");
         }
     }else{
-        if(check_and_open()!=-1){
+        if((fdFile=check_and_open(req.url,root_dir))!=-1){
             send_response(data_stream, 200, "OK", motd);
         }else{
             send_response(data_stream, 404, "Not Found", "Page Not Found\r\n");
