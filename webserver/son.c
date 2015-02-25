@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void traitement_fils(int fd_client){
+void traitement_fils(int fd_client, const char *root_dir){
     const char * mode;
     /*mode lecture et ecriture pour la structure FILE * a partir du descripteur de la socket cliente client*/
     mode="w+";
@@ -36,7 +36,7 @@ void traitement_fils(int fd_client){
             send_response(data_stream, 400, "Bad Request", "Bad Request\r\n");
         }
     }else{
-        if(strcmp(req.url, "/")==0){
+        if(check_and_open()!=-1){
             send_response(data_stream, 200, "OK", motd);
         }else{
             send_response(data_stream, 404, "Not Found", "Page Not Found\r\n");
