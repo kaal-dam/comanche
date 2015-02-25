@@ -8,7 +8,7 @@ int check_and_open(const char *url, const char *document_root){
     strcpy(tmp,document_root);
     strcat(tmp,url);
     
-    if(open(document_root,O_RDONLY)!=-1){
+   
        /*recuperation des infos sur le dossier*/
         if(stat(tmp, &file_stat)!=-1){
             /*Verif document_root est un dossier*/
@@ -31,10 +31,7 @@ int check_and_open(const char *url, const char *document_root){
             perror("stat");
             return -1;
         }
-    }
-    else{
-        perror("open root");
-        return -1;
-    }
+    
+    
     
 }

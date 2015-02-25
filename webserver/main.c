@@ -16,7 +16,7 @@ int main(){
         /*Verif document_root est un dossier*/
         if(S_ISDIR(file_stat.st_mode)){
             /*verif droit lecture sur le dossier*/
-            if(access(document_root, R_OK)==0){
+            if(access(document_root, R_OK | X_OK)==0){
                 initialiser_signaux();
 		        int serveur = creer_serveur(8080);
 		        if(serveur == -1){
