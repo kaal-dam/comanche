@@ -7,6 +7,11 @@ int check_and_open(const char *url, const char *document_root){
     struct stat file_stat;
     strcpy(tmp,document_root);
     strcat(tmp,url);
+    if(strlen(tmp)<strlen(url)+strlen(document_root)){
+        printf("prob longueur");
+        fflush(NULL);
+        return -1;
+    }
     /*recuperation des infos sur le dossier*/
     if(stat(tmp, &file_stat)!=-1){
         /*Verif document_root est un dossier*/

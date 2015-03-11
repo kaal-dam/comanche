@@ -10,17 +10,19 @@ void send_status(FILE * client, int code, const char * reason_phrase){
     }
 }
 
-/*Renvoie le message complet correspondant a la requete du client (code et statut + longueur et message*/
+/*Renvoie le message complet correspondant a la requete (non valide pour raison x) du client (code et statut + longueur et message*/
 void send_response(FILE * client, int code, const char * reason_phrase, const char * message_body){
     send_status(client, code, reason_phrase);
-    if(fprintf(client, "Content-Length: %lu\r\n\r\n%d %s", strlen(message_body)+4, code, message_body)<0){
+    if(fprintf(client, "Connection: close\r\nContent-Type: %s\r\nContent-Length: %lu\r\n\r\n%d %s", "text/plain", strlen(message_body)+4, code, message_body)<0){
         exit(-1);
     }
 }
 
+/*Renvoie le message au client correspondant a sa requete valide, avec pour but de renvoyer ensuite les donnees qu'il demande*/
 void send_response_file(FILE * client, int code, const char * reason_phrase, int size){
     send_status(client, code, reason_phrase);
-    if(fprintf(client, "Content_Length: %d\r\n", size)<0){
+    if(fprintf(client, "Connection: close\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n", "text/html", size)<0){
         exit(-1);
     }
+    fflush(NULL);
 }
