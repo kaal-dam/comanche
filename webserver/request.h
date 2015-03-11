@@ -1,9 +1,11 @@
 #include <stdio.h>
+/*enumeration des methodes supportees*/
 enum http_method{
     HTTP_GET,
     HTTP_UNSUPPORTED,
 };
 
+/*structure contenant les infos de la premiere ligne de requete http*/
 typedef struct{
     enum http_method method;
     int major_version;

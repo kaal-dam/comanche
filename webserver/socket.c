@@ -2,6 +2,7 @@
 #include <netinet/ip.h>
 #include <stdio.h>
 
+/*cree le serveur sur le port passe en parametre*/
 int creer_serveur(int port){
     int socket_server;
     socket_server=socket(AF_INET, SOCK_STREAM, 0);

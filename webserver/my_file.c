@@ -1,29 +1,32 @@
 #include "my_file.h"
 
-
+/*verifie que l'url et le document root menent vers un fichier existant et retourne le descripteur vers ce fichier (ouvert), ou -1 en cas d'erreur*/
 int check_and_open(const char *url, const char *document_root){
     int fdFile;
-    char tmp[512];
+    /*chemin relatif vers le fichier demande par le client (par concat. du chemin du dossier servi par le serveur et du chemin vers le fichier voulu dans ce dossier)*/
+    char path[512];
     struct stat file_stat;
-    strcpy(tmp,document_root);
-    strcat(tmp,url);
-    if(strlen(tmp)<strlen(url)+strlen(document_root)){
-        printf("prob longueur");
+    strcpy(path, document_root);
+    /*obtention lien complet vers le fichier demandé par le client*/
+    strcat(path, url);
+    if(strlen(path)<strlen(url)+strlen(document_root)){
+        printf("probleme concat. doc_root et url");
         fflush(NULL);
         return -1;
     }
-    /*recuperation des infos sur le dossier*/
-    if(stat(tmp, &file_stat)!=-1){
-        /*Verif document_root est un dossier*/
+    /*recuperation des infos sur le fichier indique par path*/
+    if(stat(path, &file_stat)!=-1){
+        /*Verif que le fichier indique par path est un fichier regulier*/
         if(S_ISREG(file_stat.st_mode)){
-            if((fdFile=open(tmp,O_RDONLY))!=-1){   
+            /*Ouverture du fichier pointe par path*/
+            if((fdFile=open(path, O_RDONLY))!=-1){   
                 return fdFile;
             }else{
                 perror("open file");
                 return -1;
             }
         }else{
-            printf("%s n'est pas un fichier valide!\n", tmp);
+            printf("%s n'est pas un chemin vers un fichier valide!\n", path);
             return -1;
         }
     }else{
@@ -32,6 +35,7 @@ int check_and_open(const char *url, const char *document_root){
     }
 }
 
+/*retourne la taille du fichier pointe par fd ou -1 en cas d'erreur*/
 int get_file_size(int fd){
     struct stat file_stat;
     if(fstat(fd, &file_stat)!=-1){
@@ -42,6 +46,7 @@ int get_file_size(int fd){
     }
 }
 
+/*envoie le contenue du fichier pointe par fd_in sur fd_out qui correspond a la socket cliente et retourne le nombre d'octets ecrits ou -1 si erreur*/
 int copy(int fd_in, int fd_out){
     int nb_ecrits=0;
     if(fd_in!=0 && fd_out!=0){
