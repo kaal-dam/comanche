@@ -9,7 +9,7 @@ int check_and_open(const char *url, const char *document_root){
     strcpy(path, document_root);
     /*obtention lien complet vers le fichier demandé par le client*/
     strcat(path, url);
-    if(strlen(path)<strlen(url)+strlen(document_root)){
+    if(strlen(path)<(strlen(url)+strlen(document_root))){
         printf("probleme concat. doc_root et url");
         fflush(NULL);
         return -1;

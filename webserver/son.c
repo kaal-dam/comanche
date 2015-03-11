@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "my_file.h"
+#include "my_mimes.h"
 
 void traitement_fils(int fd_client, const char *root_dir){
     /*descripteur du fichier*/
@@ -51,11 +52,14 @@ void traitement_fils(int fd_client, const char *root_dir){
         }else{
             /*ne sort pas du repertoire traite par le serv.*/
             /*verif que le chemin vers la ressource demandee est correcte (mene a un fichier existant, sur lequel on a les droits etc..) et obtention descripteur vers ce fichier ouvert*/
-            if((fdFile=check_and_open(req.url,root_dir))!=-1){
+            if((fdFile=check_and_open(req.url, root_dir))!=-1){
+                char * mime_type;
                 /*obtention taille du contenu du fichier*/
                 size=get_file_size(fdFile);
+                /*obtention mime type*/
+                mime_type=get_mime_type(req.url);
                 /*reponse OK sans contenu*/
-                send_response_file(data_stream, 200, "OK", size);
+                send_response_file(data_stream, 200, "OK", size, mime_type);
                 /*envoie contenu au client*/
                 if(copy(fdFile, fd_client)<size){
                     exit(-1);
