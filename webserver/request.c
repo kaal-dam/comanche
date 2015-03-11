@@ -48,4 +48,7 @@ void rewrite_url(char *url){
     if(s!=NULL){
        *s='\0';
     }
+    if(strcmp(url, "/")==0){
+        url=strcat(url, "index.html");
+    }
 }

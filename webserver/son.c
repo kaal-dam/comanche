@@ -6,14 +6,16 @@
 #include "my_file.h"
 
 void traitement_fils(int fd_client, const char *root_dir){
-    /*fd du fichier*/
+    /*descripteur du fichier*/
     int fdFile;
+    /*taille du fichier*/
+    int size;
     const char * mode;
     /*mode lecture et ecriture pour la structure FILE * a partir du descripteur de la socket cliente client*/
     mode="w+";
     /*motd: message d'acueil du serveur*/
-    const char * motd;
-    motd="Bienvenue sur mon serveur aventurier! Serais tu un ennemi des comanches? si tel est le cas, je te conseille de te deconnecter tres vite de ce serveur.. sinon, bienvenue a toi dans notre tribue, tu seras notre invite jusqu'a ce que tu decides de couper la connection qui nous lie. Nous t'offrirons tout ce dont tu as besoin, il te suffira de demander. Prends garde, les comanches sont de vieux indiens ruses et ils adorent faire des farces! Aussi, ne t'etonne pas si certains de tes fichiers disparaissent ou bien si certains fichiers se creent tout seul sur ton ordinateur, ce ne sera jamais rien de mechant tu peux me faire confiance. Si tu as un probleme quelconque, viens donc voir kaal-dam, le chef de notre tribu, il pourra te depanner avec ses super pouvoirs! sinon, contactes maverick, ce vieux bougre n'est jamais loin et en general il est toujours volontaire pour aider! Evites aussi de parler aux comanches qui sont trop vieux comme serveuris qui t'heberge actuellement, il a tendance a repeter betement tout ce qu'on lui dit, et le pire c'est que ca l'amuse..\n";
+    /*const char * motd;
+    motd="Bienvenue sur mon serveur aventurier! Serais tu un ennemi des comanches? si tel est le cas, je te conseille de te deconnecter tres vite de ce serveur.. sinon, bienvenue a toi dans notre tribue, tu seras notre invite jusqu'a ce que tu decides de couper la connection qui nous lie. Nous t'offrirons tout ce dont tu as besoin, il te suffira de demander. Prends garde, les comanches sont de vieux indiens ruses et ils adorent faire des farces! Aussi, ne t'etonne pas si certains de tes fichiers disparaissent ou bien si certains fichiers se creent tout seul sur ton ordinateur, ce ne sera jamais rien de mechant tu peux me faire confiance. Si tu as un probleme quelconque, viens donc voir kaal-dam, le chef de notre tribu, il pourra te depanner avec ses super pouvoirs! sinon, contactes maverick, ce vieux bougre n'est jamais loin et en general il est toujours volontaire pour aider! Evites aussi de parler aux comanches qui sont trop vieux comme serveuris qui t'heberge actuellement, il a tendance a repeter betement tout ce qu'on lui dit, et le pire c'est que ca l'amuse..\n";*/
     /*premiere ligne de la requete http envoyee par le client*/
     char req_http[3124];
     FILE * data_stream=NULL;
@@ -40,7 +42,11 @@ void traitement_fils(int fd_client, const char *root_dir){
         }
     }else{
         if((fdFile=check_and_open(req.url,root_dir))!=-1){
-            send_response(data_stream, 200, "OK", motd);
+            size=get_file_size(fdFile);
+            send_response_file(data_stream, 200, "OK", size);
+            if(copy(fdFile, fd_client)<size){
+                exit(-1);
+            }
         }else{
             send_response(data_stream, 404, "Not Found", "Page Not Found\r\n");
         }
