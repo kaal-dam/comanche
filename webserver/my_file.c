@@ -38,8 +38,36 @@ int get_file_size(int fd){
 }
 
 int copy(int fd_in, int fd_out){
+    int nb_ecrits=0;
     if(fd_in!=0 && fd_out!=0){
-        return -1;
+        FILE * in;
+        if((in=fdopen(fd_in, "r"))==NULL){
+            perror("fdopen in");
+            return -1;
+        }else{
+            FILE * out;
+            if((out=fdopen(fd_out, "w"))==NULL){
+                perror("fdopen out");
+                return -1;
+            }else{
+                char buf[512];
+                int nb_lus;
+                while((nb_lus=fread(buf, 1, 512, in))>0){
+                    if((nb_ecrits+=fwrite(buf, 1, nb_lus, out))==0){
+                        perror("fwrite");
+                        return -1;
+                    }
+                }
+                if(fclose(in)==-1){
+                    perror("fclose in");
+                    return -1;
+                }
+                if(fclose(out)==-1){
+                    perror("fclose out");
+                    return -1;
+                }
+            }
+        }
     }
-    return 0;
+    return nb_ecrits;
 }
