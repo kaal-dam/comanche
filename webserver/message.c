@@ -26,3 +26,9 @@ void send_response_file(FILE * client, int code, const char * reason_phrase, int
     }
     fflush(NULL);
 }
+
+void send_stats(FILE * client){
+   send_status(client, 200, "OK");
+   /*taille arbitraire a modifier*/
+   send_response_file(client, 200, "OK", 2000, "text/html");
+}

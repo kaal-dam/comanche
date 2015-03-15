@@ -51,8 +51,11 @@ void traitement_fils(int fd_client, const char *root_dir){
             send_response(data_stream, 403, "Forbidden", "Changing directory is forbidden to this server\r\n");
         }else{
             /*ne sort pas du repertoire traite par le serv.*/
+            /*si l'url demande est stats*/
+            if(strcmp(req.url, "/stats")==0){
+                send_stats(data_stream);
             /*verif que le chemin vers la ressource demandee est correcte (mene a un fichier existant, sur lequel on a les droits etc..) et obtention descripteur vers ce fichier ouvert*/
-            if((fdFile=check_and_open(req.url, root_dir))!=-1){
+            }else if((fdFile=check_and_open(req.url, root_dir))!=-1){
                 char * mime_type;
                 /*obtention taille du contenu du fichier*/
                 size=get_file_size(fdFile);
