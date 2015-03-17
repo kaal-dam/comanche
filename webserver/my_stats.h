@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 typedef struct
 {
     int served_connections ;
@@ -10,4 +12,4 @@ typedef struct
 
 int init_stats(void);
 web_stats * get_stats(void);
-
+void send_stats(FILE * client);

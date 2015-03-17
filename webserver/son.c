@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "my_file.h"
 #include "my_mimes.h"
+#include "my_stats.h"
 
 void traitement_fils(int fd_client, const char *root_dir){
     /*descripteur du fichier*/
@@ -41,6 +42,7 @@ void traitement_fils(int fd_client, const char *root_dir){
         /*requete incorrecte*/
         }else{
             send_response(data_stream, 400, "Bad Request", "Bad Request\r\n");
+            get_stats()->ko_400+=1;
         }
     }else{
         /*requete valide*/
@@ -49,11 +51,17 @@ void traitement_fils(int fd_client, const char *root_dir){
         if((forbidden_substring=strstr(req.url, "/../"))!=NULL){
             /*la ressource demandee est en dehors du repertoire, interdit*/
             send_response(data_stream, 403, "Forbidden", "Changing directory is forbidden to this server\r\n");
+            get_stats()->ko_403+=1;
         }else{
             /*ne sort pas du repertoire traite par le serv.*/
             /*si l'url demande est stats*/
             if(strcmp(req.url, "/stats")==0){
+                printf("demande de stats!");
+                fflush(NULL);
                 send_stats(data_stream);
+                printf("demande stats finie");
+                fflush(NULL);
+                get_stats()->ok_200+=1;
             /*verif que le chemin vers la ressource demandee est correcte (mene a un fichier existant, sur lequel on a les droits etc..) et obtention descripteur vers ce fichier ouvert*/
             }else if((fdFile=check_and_open(req.url, root_dir))!=-1){
                 char * mime_type;
@@ -67,12 +75,15 @@ void traitement_fils(int fd_client, const char *root_dir){
                 if(copy(fdFile, fd_client)<size){
                     exit(-1);
                 }
+                get_stats()->ok_200+=1;
             /*chemin demande ne mene pas a un fichier correct (inexistant)*/
             }else{
                 send_response(data_stream, 404, "Not Found", "Page Not Found\r\n");
+                get_stats()->ko_400+=1;
             }
         }
     }
     /*fils termine*/
+    get_stats()->served_requests+=1;
     exit(0);
 }

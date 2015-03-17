@@ -6,6 +6,7 @@
 #include "socket.h"
 #include "my_signal.h"
 #include "son.h"
+#include "my_stats.h"
 
 int main(){
     struct stat file_stat;
@@ -17,8 +18,14 @@ int main(){
         if(S_ISDIR(file_stat.st_mode)){
             /*verif droit lecture sur le dossier fourni dans document_root*/
             if(access(document_root, R_OK | X_OK)==0){
+                /*document_root ok, creation serveur*/
                 initialiser_signaux();
 		        int serveur = creer_serveur(8080);
+                if(init_stats()!=1){
+                    printf("erreur initialisation des stats, arret programme\n");
+                    fflush(NULL);
+                    return -1;
+                }
 		        if(serveur == -1){
 		            printf("erreur de creation serveur\n");
 		            fflush(stdout);
@@ -34,7 +41,10 @@ int main(){
 		                perror("connection to server fail");
 		                return -1;
 		            }else{
-                        /*clien tconnecte, on fork le processus pour traiter le client sans bloquer la connection a un potentiel autre client*/
+                        /*client connecte*/
+                        /*incrementation nombre de connexions servies*/
+                        get_stats()->served_connections+=1;
+                        /*fork du process pour traiter le client dans un fils sans bloquer l'acceptation d'autres clients*/
 		                int pid=fork();
 		                /*fork foire*/
 		                if(pid==-1){
