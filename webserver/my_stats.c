@@ -20,7 +20,7 @@ int init_stats(){
 
 /*renvoie les stats au client*/
 void send_stats(FILE *client){
-    char *s="";
+    char s[2048];
     int nb_ecrits=0;
     if((nb_ecrits=sprintf(s, "statistiques du serveur:\n\nserved_connections: %d\r\nserved_requests: %d\r\nok_200: %d\r\nko_400: %d\r\nko_403: %d\r\nko_404: %d\r\n\r\n", stats.served_connections, stats.served_requests, stats.ok_200, stats.ko_400, stats.ko_403, stats.ko_404))<1){
         printf("erreur de creation de la chaine des stats");
