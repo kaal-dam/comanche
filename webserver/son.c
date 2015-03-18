@@ -59,23 +59,25 @@ void traitement_fils(int fd_client, const char *root_dir){
                 send_stats(data_stream);
                 get_stats()->ok_200+=1;
             /*verif que le chemin vers la ressource demandee est correcte (mene a un fichier existant, sur lequel on a les droits etc..) et obtention descripteur vers ce fichier ouvert*/
-            }else if((fdFile=check_and_open(req.url, root_dir))!=-1){
-                char * mime_type;
-                /*obtention taille du contenu du fichier*/
-                size=get_file_size(fdFile);
-                /*obtention mime type*/
-                mime_type=get_mime_type(req.url);
-                /*reponse OK sans contenu*/
-                send_response_file(data_stream, 200, "OK", size, mime_type);
-                /*envoie contenu au client*/
-                if(copy(fdFile, fd_client)<size){
-                    exit(-1);
+            }else{ 
+                if((fdFile=check_and_open(req.url, root_dir))!=-1){
+                    char * mime_type;
+                    /*obtention taille du contenu du fichier*/
+                    size=get_file_size(fdFile);
+                    /*obtention mime type*/
+                    mime_type=get_mime_type(req.url);
+                    /*reponse OK sans contenu*/
+                    send_response_file(data_stream, 200, "OK", size, mime_type);
+                    /*envoie contenu au client*/
+                    if(copy(fdFile, fd_client)<size){
+                        exit(-1);
+                    }
+                    get_stats()->ok_200+=1;
+                /*chemin demande ne mene pas a un fichier correct (inexistant)*/
+                }else{
+                    send_response(data_stream, 404, "Not Found", "Page Not Found\r\n");
+                    get_stats()->ko_400+=1;
                 }
-                get_stats()->ok_200+=1;
-            /*chemin demande ne mene pas a un fichier correct (inexistant)*/
-            }else{
-                send_response(data_stream, 404, "Not Found", "Page Not Found\r\n");
-                get_stats()->ko_400+=1;
             }
         }
     }

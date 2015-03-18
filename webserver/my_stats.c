@@ -24,7 +24,6 @@ int init_stats(){
     stats->ko_400=0;
     stats->ko_403=0;
     stats->ko_404=0;
-    
     return 1;
 }
 
