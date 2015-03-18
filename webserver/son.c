@@ -56,11 +56,7 @@ void traitement_fils(int fd_client, const char *root_dir){
             /*ne sort pas du repertoire traite par le serv.*/
             /*si l'url demande est stats*/
             if(strcmp(req.url, "/stats")==0){
-                printf("demande de stats!");
-                fflush(NULL);
                 send_stats(data_stream);
-                printf("demande stats finie");
-                fflush(NULL);
                 get_stats()->ok_200+=1;
             /*verif que le chemin vers la ressource demandee est correcte (mene a un fichier existant, sur lequel on a les droits etc..) et obtention descripteur vers ce fichier ouvert*/
             }else if((fdFile=check_and_open(req.url, root_dir))!=-1){
