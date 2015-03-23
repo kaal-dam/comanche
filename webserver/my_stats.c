@@ -43,7 +43,7 @@ void send_stats(FILE *client){
     send_response(client, 200, "OK", s);
 }
 
-/*renvoie un pointeur vers la variable globale web_stats*/
+/*renvoie un pointeur vers la variable web_stats*/
 web_stats * get_stats (void){
     return stats;      
 }

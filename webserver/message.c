@@ -18,7 +18,7 @@ void send_response(FILE * client, int code, const char * reason_phrase, const ch
     }
 }
 
-/*Renvoie le message complet au client comme au dessus, mais pas les donnees car on s'en occupera juste apres avec la fonction copy*/
+/*Renvoie le message complet au client comme au dessus, mais pas les donnees car on s'en occupera juste apres avec la fonction copy et specification du type mime de la ressource demandee*/
 void send_response_file(FILE * client, int code, const char * reason_phrase, int size, char * mime_type){
     send_status(client, code, reason_phrase);
     if(fprintf(client, "Connection: close\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n", mime_type, size)<0){

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
+/*recupere la partie a droite du point si celui ci est present dans la chaine passee en parametre*/
 char *get_after_point(char *heystack){
     int parties=0;
     char * res;
@@ -28,6 +29,7 @@ char *get_mime_type(char * url){
     mime_correspondance mime_correspondances[58]={{"application/java-archive", "jar"}, {"application/java-vm", "class"}, {"application/javascript", "js"}, {"application/json", "json"}, {"application/octet-stream", "bin"}, {"application/pdf", "pdf"}, {"application/rar", "rar"}, {"application/xml", "xml"}, {"application/xml", "xsl"}, {"application/xml", "xsd"}, {"application/zip", "zip"}, {"application/vnd.ms-excel", "xls"}, {"application/vnd.ms-excel", "xlb"}, {"application/vnd.ms-excel", "xlt"}, {"application/vnd.ms-powerpoint", "ppt"}, {"application/vnd.ms-powerpoint", "pps"}, {"application/x-7z-compressed", "7z"}, {"application/x-bittorrent", "torrent"}, {"application/x-debian-package", "deb"}, {"application/x-debian-package", "udeb"}, {"application/x-dvi", "dvi"}, {"application/x-gtar-compressed", "tgz"}, {"application/x-gtar-compressed", "taz"}, {"application/x-iso9660-image", "iso"}, {"application/x-md5", "md5"}, {"application/x-msdos-program", "exe"}, {"application/x-msdos-program", "bat"}, {"application/x-msdos-program", "dll"}, {"application/x-redhat-package-manager", "rpm"}, {"application/x-ruby", "rb"}, {"application/x-sh", "sh"}, {"application/x-sql", "sql"}, {"application/x-tar", "tar"}, {"audio/flac", "flac"}, {"audio/mpeg", "mp3"}, {"audio/x-ms-wma", "wma"}, {"audio/x-wav", "wav"}, {"image/gif", "gif"}, {"image/jpeg", "jpeg"}, {"image/jpeg", "jpg"}, {"image/jpeg", "jpe"}, {"image/png", "png"}, {"text/css", "css"}, {"text/csv", "csv"}, {"text/x-chdr", "h"}, {"text/x-csrc", "c"}, {"text/x-java", "java"}, {"text/x-sh", "sh"}, {"text/x-perl", "pl"}, {"text/x-perl", "pm"}, {"video/mpeg", "mpeg"}, {"video/mp4", "mp4"}, {"video/x-msvideo", "avi"}, {"video/x-matroska", "mkv"}, {"application/vnd.oasis.opendocument.text", "odt"}, {"application/vnd.oasis.opendocument.presentation", "odp"}, {"text/html", "html"}, {"text/plain", "txt"}};
     int i;
     char *extension_prec=url, *extension;
+    /*tant qu'il y a des points dans la chaine, on recupere la partie a droite du premier point croise*/
     while(strcmp((extension=get_after_point(extension_prec)), "")!=0){
         extension_prec=extension;
     }

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-/*lis une ligne de la requete envoyee par le client sur size et renvoie la ligne lue*/
+/*lis une ligne de la requete envoyee par le client sur size octets et renvoie la ligne lue*/
 char *fgets_or_exit(char * buff, int size, FILE *stream){
     if(fgets(buff, size, stream)==NULL){
         exit(-1);

@@ -22,15 +22,18 @@ int main(){
                 /*document_root ok, init des stats et de la semaphore, creation serveur*/
                 initialiser_signaux();
 		        int serveur = creer_serveur(8080);
+                /*initialisation stats du serveur*/
                 if(init_stats()!=1){
                     printf("erreur init_stats, arret programme\n");
                     fflush(NULL);
                     return -1;
                 }
+                /*initialisation de la semaphore*/
                 if(init_my_semaphore()!=0){
                     printf("erreur init_my_semaphore, arret du programme\n");
                     fflush(NULL);
                 }
+                /*serveur correctement créé?*/
 		        if(serveur == -1){
 		            printf("erreur de creation serveur\n");
 		            fflush(stdout);
@@ -55,6 +58,7 @@ int main(){
                         }
                         /*incrementation nombre de connexions servies*/
                         get_stats()->served_connections+=1;
+                        /*passage semaphore sur post*/
                         if(sem_post(sem)==-1){
                             perror("sem_post");
                             return -1;
