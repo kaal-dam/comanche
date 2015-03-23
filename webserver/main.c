@@ -7,6 +7,7 @@
 #include "my_signal.h"
 #include "son.h"
 #include "my_stats.h"
+#include "my_semaphore.h"
 
 int main(){
     struct stat file_stat;
@@ -18,13 +19,17 @@ int main(){
         if(S_ISDIR(file_stat.st_mode)){
             /*verif droit lecture sur le dossier fourni dans document_root*/
             if(access(document_root, R_OK | X_OK)==0){
-                /*document_root ok, creation serveur*/
+                /*document_root ok, init des stats et de la semaphore, creation serveur*/
                 initialiser_signaux();
 		        int serveur = creer_serveur(8080);
                 if(init_stats()!=1){
-                    printf("erreur initialisation des stats, arret programme\n");
+                    printf("erreur init_stats, arret programme\n");
                     fflush(NULL);
                     return -1;
+                }
+                if(init_my_semaphore()!=0){
+                    printf("erreur init_my_semaphore, arret du programme\n");
+                    fflush(NULL);
                 }
 		        if(serveur == -1){
 		            printf("erreur de creation serveur\n");
@@ -42,8 +47,18 @@ int main(){
 		                return -1;
 		            }else{
                         /*client connecte*/
+                        /*passage semaphore sur wait*/
+                        sem_t *sem=get_my_semaphore();
+                        if(sem_wait(sem)==-1){
+                            perror("sem_wait");
+                            return -1;
+                        }
                         /*incrementation nombre de connexions servies*/
                         get_stats()->served_connections+=1;
+                        if(sem_post(sem)==-1){
+                            perror("sem_post");
+                            return -1;
+                        }
                         /*fork du process pour traiter le client dans un fils sans bloquer l'acceptation d'autres clients*/
 		                int pid=fork();
 		                /*fork foire*/

@@ -6,6 +6,7 @@
 #include "my_file.h"
 #include "my_mimes.h"
 #include "my_stats.h"
+#include "my_semaphore.h"
 
 void traitement_fils(int fd_client, const char *root_dir){
     /*descripteur du fichier*/
@@ -42,7 +43,15 @@ void traitement_fils(int fd_client, const char *root_dir){
         /*requete incorrecte*/
         }else{
             send_response(data_stream, 400, "Bad Request", "Bad Request\r\n");
+            if(sem_wait(get_my_semaphore())==-1){
+                perror("sem_wait");
+                exit(-1);
+            }
             get_stats()->ko_400+=1;
+            if(sem_post(get_my_semaphore())==-1){
+                perror("sem_post");
+                exit(-1);
+            }
         }
     }else{
         /*requete valide*/

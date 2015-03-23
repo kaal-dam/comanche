@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <semaphore.h>
 
 typedef struct
 {

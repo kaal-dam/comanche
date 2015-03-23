@@ -1,9 +1,11 @@
+#include <semaphore.h>
 #include <string.h>
 #include "my_stats.h"
 #include "message.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/mman.h>
+#include "my_semaphore.h"
 
 
 /*stats du serveur en variable globale mais accessible uniquement depuis my_stats.c*/
@@ -12,12 +14,14 @@ static web_stats* stats;
 /*met tous les attributs de la variable globale web_stats a 0*/
 int init_stats(){
     void* mm;
-    mm=mmap(NULL,sizeof(web_stats),PROT_READ|PROT_WRITE,MAP_SHARED|MAP_ANONYMOUS,-1,0);
+    /*creation d'une zone de memoire partagee pour les stats*/
+    mm=mmap(NULL, sizeof(web_stats), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
     if(mm==MAP_FAILED){
-        perror("mman");
+        perror("mmap stats");
         return -1;
     }
     stats=mm;
+    /*init des stats a zero*/
     stats->served_connections=0;
     stats->served_requests=0;
     stats->ok_200=0;
