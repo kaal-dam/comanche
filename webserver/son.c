@@ -123,6 +123,14 @@ void traitement_fils(int fd_client, const char *root_dir){
         }
     }
     /*fils termine*/
+    if(sem_wait(get_my_semaphore())==-1){
+        perror("sem_wait");
+        exit(-1);
+    }
     get_stats()->served_requests+=1;
+    if(sem_post(get_my_semaphore())==-1){
+        perror("sem_post");
+        exit(-1);
+    }
     exit(0);
 }
