@@ -12,7 +12,7 @@
 int main(){
     struct stat file_stat;
     /*repertoire racine du serveur*/
-    const char *document_root="../html";
+    const char *document_root="../resources";
     /*recuperation des infos sur le fichier contenu dans document root*/
     if(stat(document_root, &file_stat)!=-1){
         /*Verif lien fourni dans document_root est un dossier existant*/
@@ -89,6 +89,8 @@ int main(){
             return -1;
         }
     }else{
+        printf("le repertoire %s n'existe pas! arret du serveur\n", document_root);
+        fflush(NULL);
         perror("stat");
         return -1;
     }
